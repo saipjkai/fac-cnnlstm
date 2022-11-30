@@ -1,2 +1,2 @@
 # fac-cnnlstm
-Football Action Classification using CNN-LSTM
+Football event classification using CNN-LSTM
