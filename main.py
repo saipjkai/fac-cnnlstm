@@ -70,7 +70,7 @@ def train(X, y, model, version, batch_size=1, no_epochs=10, verbose=1, save_to_b
         weights_version = "weights_{}_v{}_tf.h5".format(todays_date, version)
         weights_version_path = os.path.join(weights_path, weights_version)
 
-        history_plot_version = "accVSval_2022-12-15_v{}.png".format(version)
+        history_plot_version = "accVSval_{}_v{}.png".format(todays_date, version)
         history_plot_version_path = os.path.join(curves_path, history_plot_version) 
     
     # Data - ready
@@ -120,6 +120,9 @@ if __name__ == "__main__":
     BASE_DIR = os.path.abspath(".")
     # backup directory
     BACKUP_DIR = os.path.join(BASE_DIR, "backup")
+    if not os.path.isdir(BACKUP_DIR):
+            os.mkdir(BACKUP_DIR)
+
     # data directory
     DATA_PATH = os.path.join(BASE_DIR, "data", "pickle")
 

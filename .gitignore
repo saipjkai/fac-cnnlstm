@@ -1,0 +1,3 @@
+# dataset -> video clips, pickle files, etc,.
+data/*
+!data/.placeholder

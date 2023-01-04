@@ -10,7 +10,6 @@ from plot_utils import plot_cn_matrix
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import confusion_matrix
-from sklearn.metrics import ConfusionMatrixDisplay
 
 import matplotlib.pyplot as plt
 
@@ -23,7 +22,8 @@ def calculate_metrics(y_actual, y_prediction_probabilities, y_prediction):
     # Confusion matrix
     cn_matrix = confusion_matrix(y_actual, y_prediction, labels=[0, 1, 2])
     print("Confusion matrix: \n{}".format(cn_matrix))
-    plot_cn_matrix(confusion_matrix=cn_matrix, labels=LABELS, save_path='cnf_matrix_{}.png'.format(WEIGHTS))
+    
+    plot_cn_matrix(cnfMatrix=cn_matrix, labels=LABELS, save_path=CNF_MATRIX_PATH)
     
     # Accuracy
     accuracy = accuracy_score(y_actual, y_prediction)
@@ -47,7 +47,7 @@ def main(args):
     C = DIMS[3]  # Number of channels.
 
     #- Data - load test data
-    X_test, y_test = getXy(TEST_DATA_PATH, DIMS, data_flag='test')
+    X_test, y_test = get_Xy(TEST_DATA_PATH, DIMS, data_flag='test')
 
     #- Model - load weights
     model = load_model_from_weights(WEIGHTS_PATH)
@@ -75,6 +75,12 @@ if __name__ == "__main__":
     #- Model - paths
     WEIGHTS = (args.weights).split('/')[-1]
     WEIGHTS_PATH = os.path.join(BASE_DIR, args.weights)
+    
+    #- Model - metric & confusion matrix paths
+    METRICS_PATH = os.path.join('/'.join((args.weights).split('/')[:-2]), 'metrics')
+    if not os.path.isdir(METRICS_PATH):
+        os.mkdir(METRICS_PATH)
+    CNF_MATRIX_PATH = os.path.join(METRICS_PATH, 'cnf_matrix_{}.png'.format(WEIGHTS))
 
     main(args)
 

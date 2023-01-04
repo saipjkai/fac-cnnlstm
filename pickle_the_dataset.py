@@ -68,7 +68,7 @@ if __name__ == "__main__":
     base_directory = os.path.abspath(".")
     
     # data - path, directories & processing 
-    train_path = os.path.join(base_directory, "data", "new-data")
+    train_path = os.path.join(base_directory, "data", "clips")
     
     # classes
     classes = {'Corner':0, 'Throw_in':1, 'Yellow_card':2}

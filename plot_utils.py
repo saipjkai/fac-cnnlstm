@@ -1,6 +1,8 @@
 import os
 from matplotlib import pyplot as plt
 
+from sklearn.metrics import ConfusionMatrixDisplay
+
 
 def plot_history(history, save_path):
     plt.figure(figsize=(8, 6), dpi=80)
@@ -15,7 +17,6 @@ def plot_history(history, save_path):
     
     plt.legend()    
 
-    plt_path = os.path.join(base_directory, "weights", "accVSval_{}_v{}.png".format(date.today().isoformat(), args.v))
     plt.savefig(save_path)
 
     plt.show()
@@ -25,5 +26,5 @@ def plot_history(history, save_path):
 def plot_cn_matrix(cnfMatrix, labels, save_path):
     disp = ConfusionMatrixDisplay(confusion_matrix=cnfMatrix, display_labels=labels)
     disp.plot()
-    plt.savefig('cnf_matrix_{}.png'.format(save_path))
+    plt.savefig(save_path)
     plt.show()
