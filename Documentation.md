@@ -39,7 +39,7 @@ From statistics, we got conclusion that the events we are trying to classify occ
 
 We have created a handy script which uses ffmpeg to extract the action or event clips using the action spotting labels from the football match broadcast video. Finally, all the extracted action or event clips are stored in the directory respective to their action and their match.
 
-A total of over `500 action clips` were extracted from `20 full matches` but due to available computational resources, we have took `360 action clips` with equal class distribution i.e `Throw-in:Corner:Yellow-card = 120:120:120`.
+A total of over `500 action clips` were extracted from `28 full matches` but due to available computational resources, we have took `360 action clips` with equal class distribution i.e `Throw-in:Corner:Yellow-card = 120:120:120`.
 
 ## Data preprocessing
 
@@ -52,19 +52,33 @@ For each action clip we employed following preprocessing strategy,
 - We took alternate frame (by sampling) which results to `50 images`.
 - Resizing to a resolution of `224x128` followed by normalization have been done to preprocess them.
 
+![preprocessing pipeline](./images/arch-1.png)
+
 At the end of preprocessing, A tensor of size `(360x50x128x224x3)` i.e `(no of clips x 50 frames per clip x height of frame x width of frame x rgb channels)` is stored as pickle on disk.  
 
 The dataset distribution of `train : test =  90% : 10%` is been employed while storing.
 
 ## Model building
 
-**architecture**
-![Model architecture](./images/arch.png)
+**Architecture**
 
-- Input video clip is sampled at 12 FPS (originally 24 FPS) i.e take 1 image for every 2 images.
-- VGG-16 & Resnet-52 are used as feature extractors.
-- The extracted features are being sent to LSTM model which contains 128 hidden units.
-- Finally, we get three output class probabilities.
+![model architecture](./images/arch-2.png)
+
+- In source code, we have made an option to use either VGG-16 or ResNet-52 as a feature extractor.
+- Both feature extractors are loaded with weights pretrained on ImageNet dataset.
+- LSTM classifier contains 128 hidden units.
+- Final softmax layer gives class probabilities for three events as output.
+
+**Training machine specifications**
+
+We have trained deep learning network on work laptop with following specifications,
+
+| Hardware  |          Value                 |
+|-----------|--------------------------------|
+|CPU        | Intel i5-10300H (8) @ 4.500GHz |
+|GPU        | NVIDIA GTX 1650                |  
+|Memory     | 15830 MB                       |
+|SSD        | 512 GB                         |
 
 ## Results
 
