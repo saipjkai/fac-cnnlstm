@@ -13,7 +13,7 @@ from gtts import gTTS
 
 
 def show_img(window_name, img):
-    cv2.imshow(window_name, frame)
+    cv2.imshow(window_name, img)
     key = cv2.waitKey(40) & 0xFF
     if key == ord('p'):
         key = cv2.waitKey(0) & 0xFF
@@ -21,25 +21,7 @@ def show_img(window_name, img):
         exit(0)
 
 
-if __name__ == "__main__":
-    # base directory
-    BASE_DIR = os.path.abspath(os.getcwd())
-
-    # Google TTS text & language set
-    say_this = ''  
-    language = 'en'
-
-    # Labels
-    labels = ['Corner', 'Throw_in', 'Yellow_card']
-
-    # model - load weights
-    weights_path = os.path.join(BASE_DIR, "weights", "weights_2022-12-16_v3_tf.h5")
-    model = load_model_from_weights(weights_path)
-    
-    # Data directory 
-    matches_path = os.path.join(BASE_DIR, "data", "videos")
-    matches = os.listdir(matches_path)
-
+def main(args):
     # run
     for match in matches:
         match_video_path = os.path.join(matches_path, match)
@@ -59,8 +41,9 @@ if __name__ == "__main__":
             ret = True
             while ret:
                 ret, frame = vc.read()
-                # show_img("frame", frame)
+                show_img("frame", frame)
                 frame_resized = cv2.resize(frame, (224, 128))
+                frame_resized = frame_resized/255.0
                 frames.append(frame_resized)
 
                 # show_img("frame", frame)
@@ -94,6 +77,40 @@ if __name__ == "__main__":
 
         break
     cv2.destroyAllWindows()
+
+
+def get_args():
+    # args
+    ap = ArgumentParser()
+    ap.add_argument("--weights", help='weights to load', required=True)
+    args = ap.parse_args()
+    return args
+
+
+if __name__ == "__main__":
+    # args 
+    args = get_args()
+
+    # base directory
+    BASE_DIR = os.path.abspath(os.getcwd())
+
+    # Google TTS text & language set
+    say_this = ''  
+    language = 'en'
+
+    # Labels
+    labels = ['Corner', 'Throw_in', 'Yellow_card']
+
+    # model - load weights
+    weights_path = os.path.join(BASE_DIR, args.weights)
+    model = load_model_from_weights(weights_path)
+    
+    # Data directory 
+    matches_path = os.path.join(BASE_DIR, "data", "videos")
+    matches = os.listdir(matches_path)
+
+    main(args)
+
 
 
     
