@@ -64,10 +64,16 @@ The dataset distribution of `train : test =  90% : 10%` is been employed while s
 
 ![model architecture](./images/arch-2.png)
 
-- In source code, we have made an option to use either VGG-16 or ResNet-52 as a feature extractor.
-- Both feature extractors are loaded with weights pretrained on ImageNet dataset.
-- LSTM classifier contains 128 hidden units.
-- Final softmax layer gives class probabilities for three events as output.
+- Keras[[2]](#References) deep learning framework is chosen to write for it's ease of experimentation and readability.
+- In source code, we have made an option to use either `VGG-16`[[3]](#References) or `ResNet-52`[[4]](#References) as a feature extractor.
+- Both feature extractors are loaded with weights pretrained on `imagenet`[[5]](#References) dataset.
+- `LSTM classifier` contains `128` hidden units.
+- Finally, a `softmax layer` gives class probabilities for `three events` as output.
+
+**Source code**
+
+Checkout entire project's source code in this [Github repository](https://github.com/saipjkai/fac-cnnlstm). 
+
 
 **Training machine specifications**
 
@@ -85,13 +91,15 @@ We have trained deep learning network on work laptop with following specificatio
 ## Conclusion
 These are some of the findings of this work,
 - Trained model is able to identify the three events from Soccer with False Positives. Along, with the identified event, the timestamps i.e `start and end timestamp` of the event are also being stored. 
-- The FPs are low when the feature extractor is `ResNet52` compared to the `VGG16`.
+- The FPs are low when the feature extractor is `ResNet52`[[3]](#References) compared to the `VGG16`[[2]](#References).
 - The LSTM effect on the output prediction diminishes if the `no. of hidden units > 128`.
-- Good Confusion matrix metrics with `ResNet52` feature extractor.
+- Good Confusion matrix metrics with `ResNet52`[[3]](#References) feature extractor.
 - Due to memory and GPU limitations, the overall dataset consists of `360 clips` and it's been increased from `150 clips`. After training on this increased dataset, there were less number of FPs.
 - Normalizing the images helped in increasing the `batch size = 4` while training leading to faster training process.
 
 ## Future work
+
+The results are convincing with the current framework although there were false positives. So, in future we would like to explore some more methods involving late fusion, 3D conv. nets,  combining audio and video features, etc,.
 
 ## Acknowledgements
 
@@ -105,4 +113,6 @@ This work is been carried out at Konverge.ai during December as a part of AI cap
 
 [3] &nbsp; He, Kaiming, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. "Deep residual learning for image recognition." In Proceedings of the IEEE conference on computer vision and pattern recognition, pp. 770-778. 2016.
 
+[4] &nbsp; Deng, Jia, Wei Dong, Richard Socher, Li-Jia Li, Kai Li, and Li Fei-Fei. "Imagenet: A large-scale hierarchical image database." In 2009 IEEE conference on computer vision and pattern recognition, pp. 248-255. Ieee, 2009.
 
+[5] &nbsp; https://keras.io/
