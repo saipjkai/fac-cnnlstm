@@ -33,10 +33,10 @@ def get_Xy(data_path, dims, data_flag='train'):
     """
         Get's X, y given data path & it's single unit dimensions
     """
-    X_path = os.path.join(data_path, 'X{}_{}x{}x{}_{}.pkl'.format(data_flag, *dims))
+    X_path = os.path.join(data_path, 'X{}_{}x{}x{}x{}.pkl'.format(data_flag, *dims))
     X = load_pkl(X_path) 
 
-    y_path = os.path.join(data_path, 'y{}_{}x{}x{}_{}.pkl'.format(data_flag, *dims))
+    y_path = os.path.join(data_path, 'y{}_{}x{}x{}x{}.pkl'.format(data_flag, *dims))
     y = load_pkl(y_path)
     y = to_categorical(y).astype(np.int32)
     return X, y

@@ -7,25 +7,87 @@ This document discusses about the methodologies employed in data preparation and
 SoccerNet[[1]](#References) is a large-scale dataset mainly created for soccer video understanding. Over the years, data is been labelled for various tasks such as action spotting, camera calibration, player re-identification and tracking. It is composed of `550 complete broadcast soccer games` and `12 single camera games` taken from the major European leagues. SoccerNet is not only dataset as it's maintainers also conduct yearly challenges where the best teams compete at the international level conferences.
 
 We focused on dataset related to action-spotting task. It contains `17 actions` or events are labelled with respective timestamps stored in `json` format for every match. The `17 labelled actions` in the dataset are shown below,
-|                    |                 | Actions          |                     |
-|--------------------|-----------------|------------------|---------------------|
-|      Penalty       |    Kick-off     |      Goal        |    Substitution     |
-|      Offside       | Shots on target | Shots off target |     Clearance       |
-|  Ball Out Of Play  |   **Throw-in**  |      Foul        | Indirect free-kick  |
-|  Direct free-kick  |   **Corner**    | **Yellow card**  |     Red card        |
-|  Yellow->red card  |                 |                  |                     |
+
+<table align="center">
+    <tr>
+        <th></th>
+        <th>Actions</th>
+        <th></th>
+        <th></th>
+    </tr>
+    <tr>
+        <td>Penalty</td>
+        <td>Kick-off</td>
+        <td>Goal</td>
+        <td>Substitution</td>
+    </tr>
+    <tr>
+        <td>Offside</td>
+        <td>Shots on target</td>
+        <td>Shots off target</td>
+        <td>Clearance</td>
+    </tr>
+    <tr>
+        <td>Ball out of Play</td>
+        <td><b>Throw-in</b></td>
+        <td>Foul</td>
+        <td>Indirect free-kick</td>
+    </tr>
+        <td>Direct free-kick</td>
+        <td><b>Corner</b></td>
+        <td><b>Yellow card</b></td>
+        <td>Red card</td>
+    </tr>
+    </tr>
+        <td>Yellow -> Red card</td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+</table>
 
 Out of `17 actions`, we focused on identifying three action namely `Throw-in`, `Corner` & `Yellow card`.
 
 ## Data statistics
 
 We have manually watched some soccer matches and noted down the event or action time stamp & it's duration. Below statistics have been computed to get understanding on duration of the event or action,
-|   Event or Action   | Duration (mean) | Duration (std. dev.) | Action clip (start) | Action clip (end) |  
-|---------------------|-----------------|----------------------|---------------------|-------------------|
-|      Yellow Card    |      0.909      |        0.437         |     TS + 0.0352     |    TS + 1.782     |
-|      Red Card       |      0.909      |        0.437         |     TS + 0.0352     |    TS + 1.782     |
-|      Throw-in       |      1.5        |        1.090         |     TS + 0.0694     |   TS + 2.130      |
-|      Corner         |      1.1        |        0.515         |     TS - 0.6803     |   TS + 3.680      |
+
+<table align="center">
+    <tr>
+        <th>Event or Action</th>
+        <th>Duration(mean)</th>
+        <th>Duration(std. dev.)</th>
+        <th>Action clip(start)</th>
+        <th>Action clip(end)</th>
+    </tr>
+    <tr>
+        <td>Yellow Card</td>
+        <td>0.909</td>
+        <td>0.437</td>
+        <td>TS + 0.0352</td>
+        <td>TS + 1.782</td>
+    </tr>
+    <tr>
+        <td>Red Card</td>
+        <td>0.909</td>
+        <td>0.437</td>
+        <td>TS + 0.0352</td>
+        <td>TS + 1.782</td>
+    </tr>
+    <tr>
+        <td>Throw-in</td>
+        <td>1.5</td>
+        <td>1.090</td>
+        <td>TS + 0.0694</td>
+        <td>TS + 2.130</td>
+    </tr>
+        <td>Corner</td>
+        <td>1.1</td>
+        <td>0.515</td>
+        <td>TS - 0.6803</td>
+        <td>TS + 3.680</td>
+    </tr>
+</table>
 
 **Note**
 
@@ -72,30 +134,71 @@ The dataset distribution of `train : test =  90% : 10%` is been employed while s
 
 **Source code**
 
-Checkout entire project's source code in this [Github repository](https://github.com/saipjkai/fac-cnnlstm). 
+Checkout entire project's source code in this [Github repository](https://github.com/saipjkai/fac-cnnlstm) for implementation and additional details. 
 
 
 **Training machine specifications**
 
 We have trained deep learning network on work laptop with following specifications,
 
-| Hardware  |          Value                 |
-|-----------|--------------------------------|
-|CPU        | Intel i5-10300H (8) @ 4.500GHz |
-|GPU        | NVIDIA GTX 1650                |  
-|Memory     | 15830 MB                       |
-|SSD        | 512 GB                         |
+<table align="center">
+    <tr>
+        <th>Hardware</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td>CPU</td>
+        <td>Intel i5-10300H (8) @ 4.500GHz</td>
+    </tr>
+    <tr>
+        <td>GPU</td>
+        <td>NVIDIA GTX 1650</td>
+    </tr>
+    <tr>
+        <td>Memory</td>
+        <td>15830 MB</td>
+    </tr>
+        <td>SSD</td>
+        <td>512 GB</td>
+    </tr>
+</table>
 
 ## Results
 
+These are the results on test dataset,
+
+<table align="center">
+    <tr>
+        <th>Metrics</th>
+        <th>VGG16<a href="#References">[2]</a></th>
+        <th>ResNet52<a href="#References">[3]</a></th>
+    </tr>
+    <tr>
+        <td>AUC score</td>
+        <td>0.8573</td>
+        <td>0.8017</td>
+    </tr>
+    <tr>
+        <td>Confusion matrix</td>
+        <td><img src="backup/2023-01-08/metrics/cnf_matrix_weights_2023-01-08_v1_tf.h5.png"></td>
+        <td><img src="backup/2023-01-08/metrics/cnf_matrix_weights_2023-01-08_v2_tf.h5.png"></td>
+    </tr>
+    <tr>
+        <td>Accuracy</td>
+        <td>0.639</td>
+        <td>0.583</td>
+    </tr>
+</table>
+
 ## Conclusion
+
 These are some of the findings of this work,
 - Trained model is able to identify the three events from Soccer with False Positives. Along, with the identified event, the timestamps i.e `start and end timestamp` of the event are also being stored. 
-- The FPs are low when the feature extractor is `ResNet52`[[3]](#References) compared to the `VGG16`[[2]](#References).
+- The FPs are low when the feature extractor is `VGG16`[[2]](#References) compared to the `ResNet52`[[3]](#References).
 - The LSTM effect on the output prediction diminishes if the `no. of hidden units > 128`.
-- Good Confusion matrix metrics with `ResNet52`[[3]](#References) feature extractor.
+- Good Confusion matrix metrics with `VGG16`[[2]](#References) feature extractor.
 - Due to memory and GPU limitations, the overall dataset consists of `360 clips` and it's been increased from `150 clips`. After training on this increased dataset, there were less number of FPs.
-- Normalizing the images helped in increasing the `batch size = 4` while training leading to faster training process.
+- Normalizing the images helped in increasing the `batch size` while training leading to faster training process.
 
 ## Future work
 

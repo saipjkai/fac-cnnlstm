@@ -49,6 +49,13 @@ from keras.callbacks import ModelCheckpoint, EarlyStopping
 from plot_utils import plot_history
 #- LIBS & FRAMEWORKS #####
 
+import os
+import pickle
+import numpy as np
+
+from keras.utils import Sequence
+from keras.utils import to_categorical
+
 
 #- TRAINING #####
 def train(X, y, model, version, batch_size=1, no_epochs=10, verbose=1, save_to_backup=True):
@@ -75,12 +82,11 @@ def train(X, y, model, version, batch_size=1, no_epochs=10, verbose=1, save_to_b
     
     # Data - ready
     # split data 
-    X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=0.10, shuffle=True, random_state = 42)
+    X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=0.10, shuffle=True, random_state = seed_value)
     # data generators
     train_gen = DataGenerator(X_train, y_train, batch_size=batch_size)
-    valid_gen = DataGenerator(X_train, y_valid, batch_size=batch_size)
+    valid_gen = DataGenerator(X_valid, y_valid, batch_size=batch_size)
     
-
     # Model - callbacks
     best_model_cb = ModelCheckpoint(weights_version_path, save_best_only=True, monitor='val_loss', verbose=verbose)
     # early_stopping_cb = EarlyStopping(monitor='val_loss', patience=3, verbose=verbose, restore_best_weights=True)
@@ -143,6 +149,6 @@ if __name__ == "__main__":
     model = create_model(DIMS, NO_CLASSES, learning_rate=1e-4)
 
     # Model - training
-    train(X, y, model, version=version, batch_size=1, no_epochs=10, verbose=1)
+    train(X, y, model, version=version, batch_size=4, no_epochs=40, verbose=1, save_to_backup=True)
 #- MAIN #####
 

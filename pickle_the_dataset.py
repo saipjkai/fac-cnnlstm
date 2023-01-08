@@ -1,3 +1,25 @@
+#- FOR REPRODUCIBLE RESULTS ##### 
+print('Running in 1-thread CPU mode for fully reproducible results training a CNN and generating numpy randomness.  This mode may be slow...')
+
+# Seed value
+# Apparently you may use different seed values at each stage
+seed_value= 42
+
+# 1. Set the `PYTHONHASHSEED` environment variable at a fixed value
+import os
+os.environ['PYTHONHASHSEED']=str(seed_value)
+
+# 2. Set the `python` built-in pseudo-random generator at a fixed value
+import random
+random.seed(seed_value)
+
+# 3. Set the `numpy` pseudo-random generator at a fixed value
+import numpy as np
+np.random.seed(seed_value)
+#- FOR REPRODUCIBLE RESULTS ##### 
+
+
+#- LIBS & FRAMEWORKS #####
 import os 
 import numpy as np
 import cv2
@@ -7,6 +29,7 @@ from tqdm import tqdm
 from sklearn.model_selection import train_test_split
 
 import pickle
+#- LIBS & FRAMEWORKS #####
 
 
 def get_data_paths(data_path, classes):
@@ -76,8 +99,8 @@ if __name__ == "__main__":
 
     # data - single unit dimensions
     D = 50   # New Depth size => Number of frames.
-    W = 224  # New Frame Width.
     H = 128  # New Frame Height.
+    W = 224  # New Frame Width.
     C = 3    # Number of channels.
     dims = (D, H, W, C) # Single Video shape.
 
@@ -86,23 +109,24 @@ if __name__ == "__main__":
     X, y = preprocess(dims, data_paths, data_groundtruths, True)
 
     # data - train & test split 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.10, shuffle=True, random_state = 42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.10, shuffle=True, random_state = seed_value)
 
     # data pickling
     data_pkl_path = os.path.join(base_directory, "data", "pickle")
     if not os.path.isdir(data_pkl_path):
         os.mkdir(data_pkl_path)
     
-    X_pkl_path = os.path.join(data_pkl_path, 'Xtrain_{}x{}x{}_{}.pkl'.format(D, H, W, no_classes))
-    y_pkl_path = os.path.join(data_pkl_path, 'ytrain_{}x{}x{}_{}.pkl'.format(D, H, W, no_classes))
+    # X, y
+    X_pkl_path = os.path.join(data_pkl_path, 'Xtrain_{}x{}x{}x{}.pkl'.format(D, H, W, no_classes))
+    y_pkl_path = os.path.join(data_pkl_path, 'ytrain_{}x{}x{}x{}.pkl'.format(D, H, W, no_classes))
     with open(X_pkl_path, 'wb') as X_train_pkl:
         pickle.dump(X_train, X_train_pkl)
     with open(y_pkl_path, 'wb') as y_train_pkl:
         pickle.dump(y_train, y_train_pkl)
 
-    
-    X_test_path = os.path.join(data_pkl_path, 'Xtest_{}x{}x{}_{}.pkl'.format(D, H, W, no_classes))
-    y_test_path = os.path.join(data_pkl_path, 'ytest_{}x{}x{}_{}.pkl'.format(D, H, W, no_classes))
+    # Xtest, ytest
+    X_test_path = os.path.join(data_pkl_path, 'Xtest_{}x{}x{}x{}.pkl'.format(D, H, W, no_classes))
+    y_test_path = os.path.join(data_pkl_path, 'ytest_{}x{}x{}x{}.pkl'.format(D, H, W, no_classes))
     with open(X_test_path, 'wb') as X_test_pkl:
         pickle.dump(X_test, X_test_pkl)
     with open(y_test_path, 'wb') as y_test_pkl:
