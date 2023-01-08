@@ -83,6 +83,7 @@ def get_args():
     # args
     ap = ArgumentParser()
     ap.add_argument("--weights", help='weights to load', required=True)
+    ap.add_argument("--match_dir", help='path to directory containing entire matches', required=True)
     args = ap.parse_args()
     return args
 
@@ -106,7 +107,7 @@ if __name__ == "__main__":
     model = load_model_from_weights(weights_path)
     
     # Data directory 
-    matches_path = os.path.join(BASE_DIR, "data", "videos")
+    matches_path = os.path.join(BASE_DIR, args.match_dir)
     matches = os.listdir(matches_path)
 
     main(args)

@@ -114,7 +114,14 @@ For each action clip we employed following preprocessing strategy,
 - We took alternate frame (by sampling) which results to `50 images`.
 - Resizing to a resolution of `224x128` followed by normalization have been done to preprocess them.
 
-![preprocessing pipeline](./images/arch-1.png)
+<table>
+   <tr>
+      <center><img src="./images/arch-1.png"></center>
+   </tr>
+   <tr>
+      <center>preprocessing pipeline</center>
+   </tr>
+</table>
 
 At the end of preprocessing, A tensor of size `(360x50x128x224x3)` i.e `(no of clips x 50 frames per clip x height of frame x width of frame x rgb channels)` is stored as pickle on disk.  
 
@@ -124,7 +131,14 @@ The dataset distribution of `train : test =  90% : 10%` is been employed while s
 
 **Architecture**
 
-![model architecture](./images/arch-2.png)
+<table>
+   <tr>
+      <center><img src="./images/arch-2.png"></center>
+   </tr>
+   <tr>
+      <center>model architecture</center>
+   </tr>
+</table>
 
 - Keras[[2]](#References) deep learning framework is chosen to write for it's ease of experimentation and readability.
 - In source code, we have made an option to use either `VGG-16`[[3]](#References) or `ResNet-52`[[4]](#References) as a feature extractor.
@@ -180,8 +194,8 @@ These are the results on test dataset,
     </tr>
     <tr>
         <td>Confusion matrix</td>
-        <td><img src="backup/2023-01-08/metrics/cnf_matrix_weights_2023-01-08_v1_tf.h5.png"></td>
-        <td><img src="backup/2023-01-08/metrics/cnf_matrix_weights_2023-01-08_v2_tf.h5.png"></td>
+        <td><img src="images/cnf_matrix_weights_2023-01-08_v1_tf.h5.png"></td>
+        <td><img src="images/cnf_matrix_weights_2023-01-08_v2_tf.h5.png"></td>
     </tr>
     <tr>
         <td>Accuracy</td>

@@ -86,12 +86,24 @@ def preprocess(dims, data_paths, data_groundtruths=None, is_training_data=False)
         return all_video_features
 
 
+def get_args():
+    # args
+    ap = ArgumentParser()
+    ap.add_argument("--clips_dir", help='path to action video clips directory', required=True)
+    # ap.add_argument("--dims", help="single unit data dimensions => (Depth, Height, Width, Channels)", default=(50, 128, 224, 3))
+    args = ap.parse_args()
+    return args
+
+
 if __name__ == "__main__":
+    # args
+    args = get_args()
+
     # root directory
     base_directory = os.path.abspath(".")
     
     # data - path, directories & processing 
-    train_path = os.path.join(base_directory, "data", "clips")
+    train_path = os.path.join(base_directory, args.clips_dir)
     
     # classes
     classes = {'Corner':0, 'Throw_in':1, 'Yellow_card':2}
