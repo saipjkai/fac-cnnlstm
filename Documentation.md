@@ -114,12 +114,12 @@ For each action clip we employed following preprocessing strategy,
 - We took alternate frame (by sampling) which results to `50 images`.
 - Resizing to a resolution of `224x128` followed by normalization have been done to preprocess them.
 
-<table>
+<table align="center">
    <tr>
-      <center><img src="./images/arch-1.png"></center>
+      <img src="./images/arch-1.png">
    </tr>
    <tr>
-      <center>preprocessing pipeline</center>
+      preprocessing pipeline
    </tr>
 </table>
 
@@ -131,12 +131,12 @@ The dataset distribution of `train : test =  90% : 10%` is been employed while s
 
 **Architecture**
 
-<table>
+<table align="center">
    <tr>
-      <center><img src="./images/arch-2.png"></center>
+      <img src="./images/arch-2.png">
    </tr>
    <tr>
-      <center>model architecture</center>
+      model architecture
    </tr>
 </table>
 
