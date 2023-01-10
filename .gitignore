@@ -1,3 +1,4 @@
 # dataset -> video clips, pickle files, etc,.
 data/*
 !data/.placeholder
+!data/test_video.mp4

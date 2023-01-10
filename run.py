@@ -68,7 +68,7 @@ def main(args):
                         # gtts_output.save("trash.mp3")
                         # os.system("mpg321 trash.mp3")
 
-                        print("{} - {} \t Event occurred: {}".format(timestamp_start, timestamp_end ,prediction_label))
+                        print("{} - {} \t Event occurred: {}".format(timestamp_start, timestamp_end, prediction_label))
 
                     frames = frames[-50:]
 
