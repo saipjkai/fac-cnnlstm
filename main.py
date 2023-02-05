@@ -3,7 +3,7 @@ print('Running in 1-thread CPU mode for fully reproducible results training a CN
 
 # Seed value
 # Apparently you may use different seed values at each stage
-seed_value= 42
+seed_value=42
 
 # 1. Set the `PYTHONHASHSEED` environment variable at a fixed value
 import os
@@ -40,27 +40,26 @@ K.set_session(sess)
 from argparse import ArgumentParser
 from datetime import date
 
+import pickle
 
-from data_utils import get_Xy, DataGenerator 
 from sklearn.model_selection import train_test_split
 
-from CNN_LSTM import create_model
+from process_data import batch_generator
+from process_data import DataGenerator
+# from C3D import c3d_model
+from CNN_LSTM import cnn_lstm_model
+
 from keras.callbacks import ModelCheckpoint, EarlyStopping 
+
 from plot_utils import plot_history
 #- LIBS & FRAMEWORKS #####
 
-import os
-import pickle
-import numpy as np
 
-from keras.utils import Sequence
-from keras.utils import to_categorical
-
-
-#- TRAINING #####
-def train(X, y, model, version, batch_size=1, no_epochs=10, verbose=1, save_to_backup=True):
+#- MAIN #####
+def main(args, save_to_backup=True):
     # Save to Backup - weights, training curves
     if save_to_backup:
+        version = args.version
         todays_date = date.today().isoformat()
         training_backup_path = os.path.join(BACKUP_DIR, todays_date)
         if not os.path.isdir(training_backup_path):
@@ -78,77 +77,86 @@ def train(X, y, model, version, batch_size=1, no_epochs=10, verbose=1, save_to_b
         weights_version_path = os.path.join(weights_path, weights_version)
 
         history_plot_version = "accVSval_{}_v{}.png".format(todays_date, version)
-        history_plot_version_path = os.path.join(curves_path, history_plot_version) 
-    
-    # Data - ready
-    # split data 
-    X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=0.10, shuffle=True, random_state = seed_value)
-    # data generators
-    train_gen = DataGenerator(X_train, y_train, batch_size=batch_size)
-    valid_gen = DataGenerator(X_valid, y_valid, batch_size=batch_size)
-    
-    # Model - callbacks
-    best_model_cb = ModelCheckpoint(weights_version_path, save_best_only=True, monitor='val_loss', verbose=verbose)
-    # early_stopping_cb = EarlyStopping(monitor='val_loss', patience=3, verbose=verbose, restore_best_weights=True)
-    callbacks = [best_model_cb]
+        history_plot_version_path = os.path.join(curves_path, history_plot_version)
 
-    # Model - training
-    history = model.fit(train_gen,
-                        epochs=no_epochs,
-                        verbose=verbose,
-                        validation_data=valid_gen,
-                        callbacks=callbacks
-                    )
+
+    # train, validation & test datasets
+    X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=0.1, random_state=seed_value, stratify=y)
+
+    # training & validation dataloaders
+    batch_size=2
+    train_dataloader = batch_generator(X_train, y_train, num_classes=NUM_CLASSES, dims=(50, 128, 224, 3), batch_size=batch_size, augmentation=False, model_arch="cnn_lstm", train=True)
+    valid_dataloader = batch_generator(X_valid, y_valid, num_classes=NUM_CLASSES, dims=(50, 128, 224, 3), batch_size=batch_size, augmentation=False, model_arch="cnn_lstm", train=False)
+
+    t_dl = DataGenerator(X_train, y_train, batch_size=batch_size, dims=(50, 128, 224, 3), num_classes=NUM_CLASSES)
+    v_dl = DataGenerator(X_valid, y_valid, batch_size=batch_size, dims=(50, 128, 224, 3), num_classes=NUM_CLASSES)
+
+    # training
+    epochs = 20
+    lr = 1e-4
+
+    if save_to_backup:
+        # Model - callbacks
+        best_model_cb = ModelCheckpoint(weights_version_path, save_best_only=True, monitor='val_loss', verbose=1)
+        callbacks = [best_model_cb]
+    else:
+        callbacks=[]
+
+    # model = c3d_model(input_shape=(16, 112, 112, 3), output_classes=NUM_CLASSES)
+    model = cnn_lstm_model(input_shape=(50, 128, 224, 3), output_classes=NUM_CLASSES, learning_rate=1e-4, arch="vgg")
+    model.summary()
     
-    # Model - plot history & save
+    # history = model.fit(train_dataloader,
+    #                     steps_per_epoch=len(y_train) // batch_size,
+    #                     epochs=epochs,
+    #                     callbacks=callbacks,
+    #                     validation_data=valid_dataloader,
+    #                     validation_steps=len(y_valid) // batch_size,
+    #                     verbose=1)
+    history = model.fit(t_dl,
+                        epochs=epochs,
+                        callbacks=callbacks,
+                        validation_data=v_dl,
+                        verbose=1)
+    
     plot_history(history, save_path=history_plot_version_path)
-#- TRAINING #####
+#- MAIN #####
 
 
 #- ARGS #####
 def get_args():
-    # args
     ap = ArgumentParser()
-    ap.add_argument("--v", help='weights version number', required=True)
-    ap.add_argument("--dims", help="single unit data dimensions => (Depth, Height, Width, Channels)", default=(50, 128, 224, 3))
+    ap.add_argument('--pkl_dir', help="path to pickled dataset directory", required=True)
+    ap.add_argument('--version', help="version number", required=True)
     args = ap.parse_args()
     return args
 #- ARGS #####
 
 
-#- MAIN #####
 if __name__ == "__main__":
-    # ARGS
     args = get_args()
 
-    # PATHS
-    # root directory
-    BASE_DIR = os.path.abspath(".")
-    # backup directory
+    # base directory
+    BASE_DIR = os.getcwd()
+
+    # train data
+    PKL_DIR = os.path.abspath(args.pkl_dir)
+    X_train_pkl_path = os.path.join(PKL_DIR, 'X_train.pkl')
+    with open(X_train_pkl_path, 'rb') as f:
+        X = pickle.load(f)
+    y_train_pkl_path = os.path.join(PKL_DIR, 'y_train.pkl')
+    with open(y_train_pkl_path, 'rb') as f:
+        y = pickle.load(f)
+
+    # classes
+    CLASSES_PATH = os.path.join(PKL_DIR, 'classes.pkl')
+    with open(CLASSES_PATH, 'rb') as f:
+        CLASSES = pickle.load(f)
+    NUM_CLASSES = len(CLASSES)
+
+    # backup
     BACKUP_DIR = os.path.join(BASE_DIR, "backup")
     if not os.path.isdir(BACKUP_DIR):
-            os.mkdir(BACKUP_DIR)
-
-    # data directory
-    DATA_PATH = os.path.join(BASE_DIR, "data", "pickle")
-
-    # MODEL INPUTS & OUTPUTS, VERSION
-    # input dims
-    DIMS = args.dims
-    # output classes 
-    CLASSES = {'Corner':0, 'Throw_in':1, 'Yellow_card':2}
-    NO_CLASSES = len(CLASSES)
-    # version 
-    version = args.v
-
-    # DATA
-    # load X & y 
-    X, y = get_Xy(DATA_PATH, dims=DIMS, data_flag='train')
+        os.mkdir(BACKUP_DIR)
     
-    # MODEL ARCHITECTURE
-    model = create_model(DIMS, NO_CLASSES, learning_rate=1e-4)
-
-    # Model - training
-    train(X, y, model, version=version, batch_size=4, no_epochs=40, verbose=1, save_to_backup=True)
-#- MAIN #####
-
+    main(args)
