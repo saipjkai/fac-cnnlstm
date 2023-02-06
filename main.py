@@ -44,7 +44,6 @@ import pickle
 
 from sklearn.model_selection import train_test_split
 
-from process_data import batch_generator
 from process_data import DataGenerator
 # from C3D import c3d_model
 from CNN_LSTM import cnn_lstm_model
@@ -85,11 +84,8 @@ def main(args, save_to_backup=True):
 
     # training & validation dataloaders
     batch_size=2
-    train_dataloader = batch_generator(X_train, y_train, num_classes=NUM_CLASSES, dims=(50, 128, 224, 3), batch_size=batch_size, augmentation=False, model_arch="cnn_lstm", train=True)
-    valid_dataloader = batch_generator(X_valid, y_valid, num_classes=NUM_CLASSES, dims=(50, 128, 224, 3), batch_size=batch_size, augmentation=False, model_arch="cnn_lstm", train=False)
-
-    t_dl = DataGenerator(X_train, y_train, batch_size=batch_size, dims=(50, 128, 224, 3), num_classes=NUM_CLASSES)
-    v_dl = DataGenerator(X_valid, y_valid, batch_size=batch_size, dims=(50, 128, 224, 3), num_classes=NUM_CLASSES)
+    train_loader = DataGenerator(X_train, y_train, batch_size=batch_size, dims=(50, 128, 224, 3), num_classes=NUM_CLASSES)
+    validation_loader = DataGenerator(X_valid, y_valid, batch_size=batch_size, dims=(50, 128, 224, 3), num_classes=NUM_CLASSES)
 
     # training
     epochs = 20
@@ -106,17 +102,10 @@ def main(args, save_to_backup=True):
     model = cnn_lstm_model(input_shape=(50, 128, 224, 3), output_classes=NUM_CLASSES, learning_rate=1e-4, arch="vgg")
     model.summary()
     
-    # history = model.fit(train_dataloader,
-    #                     steps_per_epoch=len(y_train) // batch_size,
-    #                     epochs=epochs,
-    #                     callbacks=callbacks,
-    #                     validation_data=valid_dataloader,
-    #                     validation_steps=len(y_valid) // batch_size,
-    #                     verbose=1)
-    history = model.fit(t_dl,
+    history = model.fit(train_loader,
                         epochs=epochs,
                         callbacks=callbacks,
-                        validation_data=v_dl,
+                        validation_data=validation_loader,
                         verbose=1)
     
     plot_history(history, save_path=history_plot_version_path)

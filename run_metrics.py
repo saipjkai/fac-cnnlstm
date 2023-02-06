@@ -32,14 +32,11 @@ def calculate_metrics(y_actual, y_prediction_probabilities, y_prediction):
 
 
 def run_inference(model, X, y):
-    # test_dataloader = batch_generator(X, y, num_classes=no_classes, dims=(50, 128, 224, 3), batch_size=1, augmentation=False, model_arch="cnn_lstm", train=False)
     test_dataloader = DataGenerator(X, y, batch_size=1, dims=(50, 128, 224, 3), num_classes=no_classes)
 
     y_actual= []
     y_prediction_probabilities = []
     y_prediction = []
-    # for i in range(len(y)):
-    #     x_t, y_t = next(test_dataloader)
     for x_t, y_t in test_dataloader:
         # predictions
         prediction = model.predict(x_t)
