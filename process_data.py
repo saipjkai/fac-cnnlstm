@@ -54,6 +54,9 @@ class DataGenerator(Sequence):
             if self.model_arch == "cnn_lstm":
                 x_s = x_s[:100:2]
                 y_s = y_
+            elif self.model_arch == "c3d":
+                x_s = x_s[:16]
+                y_s = y_
 
             x_b.append(x_s)
             y_b.append(y_s)

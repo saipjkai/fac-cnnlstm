@@ -2,9 +2,10 @@ from argparse import ArgumentParser
 import os
 import numpy as np
 
-from model_utils import load_model_from_weights
+from process_data import DataGenerator
 
-from process_data import batch_generator, DataGenerator
+import keras 
+
 from plot_utils import plot_cn_matrix
 
 from sklearn.metrics import accuracy_score
@@ -33,6 +34,7 @@ def calculate_metrics(y_actual, y_prediction_probabilities, y_prediction):
 
 def run_inference(model, X, y):
     test_dataloader = DataGenerator(X, y, batch_size=1, dims=(50, 128, 224, 3), num_classes=no_classes)
+    # test_dataloader = DataGenerator(X, y, batch_size=1, dims=(16, 112, 112, 3), model_arch="c3d", num_classes=no_classes)
 
     y_actual= []
     y_prediction_probabilities = []
@@ -47,6 +49,11 @@ def run_inference(model, X, y):
         y_actual.append(np.argmax(y_t[0]))
 
     return y_actual, y_prediction_probabilities, y_prediction
+
+
+def load_model_from_weights(WEIGHTS_PATH):
+    model = keras.models.load_model(WEIGHTS_PATH)
+    return model
 
 
 def get_args():
