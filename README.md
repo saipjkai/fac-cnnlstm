@@ -85,7 +85,7 @@ $ pip install -r requirements.txt
 
 - We can train our model by running the `main.py`,
     ```bash
-    $ python main.py --v 1 
+    $ python main.py --pkl_dir [/path/to/directory/containing/pkls] --version 1 
     ```
     *`--v` represents version number and after entire training best weights and training curves are stored with current date and version number in `backup` directory.*
 
@@ -93,7 +93,7 @@ $ pip install -r requirements.txt
 
 - For calculating the metrics on test data `pickle` with the trained model, we can run `run_metrics.py`
     ```bash
-    $ python run_metrics.py --weights backup/2023-01-08/weights/weights_2023-01-08_v1_tf.h5
+    $ python run_metrics.py --weights backup/2023-01-08/weights/weights_2023-01-08_v1_tf.h5 --test_path [/path/to/directory/containing/test/pkls]
     ```
     This will print the metrics such as `AUC`, `confusion matrix` and `accuracy`.
 
