@@ -1,12 +1,9 @@
-# Football Action Classification using CNN-LSTM
+# Football Action Classification 
 This repository contains the code for data preparation, training and validation for the classifying Football events mainly focusing on Throw-ins, Yellow cards & Corners.
 
-The network architecture is as follows,
-
-- Input video clip is sampled at 12 FPS (originally 24 FPS) i.e take 1 image for every 2 images. 
-- VGG-16 & Resnet-52 are used as feature extractors.
-- The extracted features are being sent to LSTM model which contains 128 hidden units.
-- Finally, we get three output class probabilities.
+We have implemented two different methodologies to approach the football action classification namely,
+1. CNN - LSTM
+2. C3D
 
 ## Install requirements
 
@@ -76,9 +73,9 @@ $ pip install -r requirements.txt
     ```
     These clips can be directly used for training purposes.
 
-- For the ease of training and testing, we preprocess all the videos and store them in the form of `pickle` format.
+- For the ease of training and testing, we store the video paths and given class in the form of `pickle` format.
     ```
-    $ python pickle_the_dataset.py --clips_dir [/path/to/final_action_clips/]
+    $ python pickle_the_dataset.py --in_dir [/path/to/final_action_clips/] --out_dir [/path/to/store/pkls]
     ```
 
 ## Training
@@ -87,13 +84,14 @@ $ pip install -r requirements.txt
     ```bash
     $ python main.py --pkl_dir [/path/to/directory/containing/pkls] --version 1 
     ```
-    *`--v` represents version number and after entire training best weights and training curves are stored with current date and version number in `backup` directory.*
+    - *`--version` represents version number and after entire training best weights and training curves are stored with current date and version number in `backup` directory.*
+    - data preparation and training scripts can be changed to either approaches easily in source code.
 
 ## Metrics
 
 - For calculating the metrics on test data `pickle` with the trained model, we can run `run_metrics.py`
     ```bash
-    $ python run_metrics.py --weights backup/2023-01-08/weights/weights_2023-01-08_v1_tf.h5 --test_path [/path/to/directory/containing/test/pkls]
+    $ python run_metrics.py --weights backup/2023-01-08/weights/weights_2023-01-08_v1_tf.h5 --test_path [/path/to/directory/containing/pkls]
     ```
     This will print the metrics such as `AUC`, `confusion matrix` and `accuracy`.
 
@@ -112,7 +110,7 @@ $ pip install -r requirements.txt
     $ python run.py --weights backup/2023-01-08/weights/weights_2023-01-08_v1_tf.h5 --match_dir [/path/to/directory/containing/matches]
     ```
 
-
 ## Additional details
 - For in-depth documentation, please have a look at [Documentation.md](./Documentation.md)
 - For presentation slides, please have a look at [Football Action Classification-Capability.pptx](./Football%20Action%20Classification%20-%20Capability.pptx)
+

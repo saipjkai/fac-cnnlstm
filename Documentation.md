@@ -108,6 +108,7 @@ A total of over `500 action clips` were extracted from `28 full matches` and we 
 ## Methodologies
 
 We have implemented two different methodologies to approach the football action classification namely,
+
 1. CNN - LSTM
 2. C3D
 
@@ -116,11 +117,13 @@ We have implemented two different methodologies to approach the football action 
 **Data preprocessing**
 
 A unit action video clip details are as follows,
+
 - Resolution: `1280x720`
 - Duration: `4 sec's`
 - FPS: `25 fps`
 
 For each action clip, we have employed the  following preprocessing strategy,
+
 - We took alternate frame (by sampling) which results to `50 images`.
 - Resizing to a resolution of `128x224` followed by normalization have been done to preprocess them.
 
@@ -128,10 +131,8 @@ For each action clip, we have employed the  following preprocessing strategy,
    <tr>
       <img src="./images/data_process-1.png">
    </tr>
-   <tr>
-      preprocessing pipeline
-   </tr>
 </table>
+<center>preprocessing pipeline</center>
 
 At the end of preprocessing, A tensor of size `(batch_sizex50x128x224x3)` i.e `(batch_size x 50 frames per clip x height of frame x width of frame x rgb channels)` is stored as pickle on disk.  
 
@@ -143,10 +144,8 @@ The dataset distribution is `train : validation: test =  81% : 10% : 9%`
    <tr>
       <img src="./images/arch-1.png">
    </tr>
-   <tr>
-      model architecture
-   </tr>
 </table>
+<center>model architecture</center>
 
 - Keras[[2]](#References) deep learning framework is chosen to write for it's ease of experimentation and readability.
 - In source code, we have made an option to use either `VGG-16`[[3]](#References) or `ResNet-52`[[4]](#References) as a feature extractor.
@@ -157,6 +156,7 @@ The dataset distribution is `train : validation: test =  81% : 10% : 9%`
 **Findings**
 
 These are some of the findings of this work,
+
 - Trained model is able to identify the three events from Soccer with False Positives. Along, with the identified event, the timestamps i.e `start and end timestamp` of the event are also being stored. 
 - The FPs are low when the feature extractor is `VGG16`[[2]](#References) compared to the `ResNet52`[[3]](#References).
 - The LSTM effect on the output prediction diminishes if the `no. of hidden units > 128`.
@@ -169,11 +169,13 @@ These are some of the findings of this work,
 **Data preprocessing**
 
 A unit action video clip details are as follows,
+
 - Resolution: `1280x720`
 - Duration: `4 sec's`
 - FPS: `25 fps`
 
 For each action clip, we have employed the following preprocessing strategy,
+
 - We took 16 frames (by sampling) in sequence which results to `16 images`.
 - Resizing to a resolution of `112x112` followed by normalization have been done to preprocess them.
 
@@ -181,10 +183,8 @@ For each action clip, we have employed the following preprocessing strategy,
    <tr>
       <img src="./images/data_process-2.png">
    </tr>
-   <tr align="center">
-      preprocessing pipeline
-   </tr>
 </table>
+<center>preprocessing pipeline</center>
 
 At the end of preprocessing, A tensor of size `(batch_sizex16x112x112x3)` i.e `(batch_size x 16 frames per clip x height of frame x width of frame x rgb channels)` is stored as pickle on disk.  
 
@@ -196,25 +196,22 @@ The dataset distribution is `train : validation: test =  81% : 10% : 9%`
    <tr>
       <img src="./images/arch-2.png">
    </tr>
-   <tr>
-      model architecture
-   </tr>
 </table>
+<center>model architecture <center>
 
 - Keras[[2]](#References) deep learning framework is chosen to write for it's ease of experimentation and readability.
-- C3D<a href="#References">[5]</a> is also known as Convolution 3D.
-- The actual implemented C3D<a href="#References">[5]</a> architecture is been extracted from original C3D<a href="#References">[5]</a> architecture.
+- `C3D`<a href="#References">[5]</a> is also known as `Convolution 3D`.
+- The actual implemented `C3D`<a href="#References">[5]</a> architecture is been extracted from original `C3D`<a href="#References">[5]</a> architecture.
 - Finally, a `softmax layer` gives class probabilities for `three events` as output.
 - Trained entire architecture from scratch i.e no pretrained models used.
 
 **Findings**
 
-- 
+- Training C3D from scratch requires a lot of time and computational resources.
 
 ## Source code
 
 Checkout entire project's source code in this [Github repository](https://github.com/saipjkai/fac-cnnlstm) for implementation and additional details. 
-
 
 **Training machine specifications**
 
@@ -262,7 +259,7 @@ These are the results on test dataset,
         <td>AUC score</td>
         <td>0.9479</td>
         <td>0.8368</td>
-        <td>.</td>
+        <td>-</td>
     </tr>
     <tr>
         <td>Confusion matrix</td>
@@ -274,7 +271,7 @@ These are the results on test dataset,
         <td>Accuracy</td>
         <td>0.8612</td>
         <td>0.75</td>
-        <td>.</td>
+        <td>-</td>
     </tr>
 </table>
 
@@ -284,11 +281,11 @@ As of now, CNN-LSTM is giving better results as training C3D from scratch takes 
 
 ## Future work
 
-The results are convincing with the methodoloy-1 (CNN-LSTM) although there were false positives. So, in future we would like to explore some more methods involving late fusion,  combining audio and video features, etc,.
+The results are convincing with the methodoloy-1 (CNN-LSTM) although there were false positives. So, in future we would like to explore some more methods involving late fusion, combining audio and video features, etc,.
 
 ## Acknowledgements
 
-This work is been carried out at Konverge.ai during December as a part of AI capability team. My sincere thanks Kalpit B. for his constant guidance and Pooja M. for managing entire team. I am grateful to the colleagues who are working in different projects and sharing knowledge.  
+This work is been carried out at Konverge.ai from December to January as a part of AI capability team. My sincere thanks Kalpit B. for his constant guidance and Pooja M. for managing entire team. I am grateful to the colleagues who are working in different projects and sharing knowledge.  
 
 ## References
 
